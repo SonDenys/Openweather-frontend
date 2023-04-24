@@ -1,15 +1,16 @@
 import { Inter } from "next/font/google";
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { chooseNextTrip } from "@/helpers/chooseNextTrip";
-import NextTrip from "@/components/nextTrip";
-import axios from "axios";
-import { BACKEND_URL } from "@/params";
+import { useRouter } from "next/router";
+import Link from "next/link";
+
 import { addFavorite } from "@/helpers/favorites";
+import NextTrip from "@/components/NextTrip";
 
 const inter = Inter({ subsets: ["latin"] });
 
-interface NextTripReponse {
+interface NextTripInterface {
   city: string;
   score: number;
   temp: number;
@@ -20,7 +21,8 @@ interface NextTripReponse {
 export default function Home() {
   const [city1, setCity1] = useState("");
   const [city2, setCity2] = useState("");
-  const [nextTrip, setNextTrip] = useState<NextTripReponse>();
+  const [nextTrip, setNextTrip] = useState<NextTripInterface>();
+  const router = useRouter();
 
   const handleChooseNextTrip = async (city1: string, city2: string) => {
     try {
@@ -38,6 +40,7 @@ export default function Home() {
     try {
       const result = await addFavorite(cityName);
       console.log("favoriteCity ===", result?.data);
+      router.push("/favoritesPage");
     } catch (error) {
       console.log(error);
     }
@@ -47,6 +50,12 @@ export default function Home() {
     <main
       className={`bg-white flex min-h-screen flex-col items-center justify-evenly ${inter.className}`}
     >
+      <Link href="/favoritesPage">
+        <div>
+          <Button variant="outlined">Les favoris</Button>
+        </div>
+      </Link>
+
       <div className="">
         <TextField
           id="standard-basic"

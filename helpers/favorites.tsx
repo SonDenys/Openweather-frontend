@@ -11,3 +11,12 @@ export const addFavorite = async (cityName: string) => {
     console.log(error);
   }
 };
+
+export const getFavorites = async () => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/favorites`);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
