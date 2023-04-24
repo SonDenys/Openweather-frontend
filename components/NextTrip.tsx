@@ -9,7 +9,7 @@ export interface nextTripProps {
 export default function NextTrip(props: nextTripProps) {
   return (
     <>
-      <div>
+      <div className="text-gray-900">
         <h2>Ta prochaine destination !</h2>
         <div>
           <div>Ville : {props.cityName}</div>

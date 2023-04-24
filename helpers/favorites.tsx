@@ -20,3 +20,14 @@ export const getFavorites = async () => {
     console.log(error);
   }
 };
+
+export const deleteFavorites = async (cityName: string) => {
+  try {
+    const response = await axios.post(`${BACKEND_URL}/favorites/delete`, {
+      cityName,
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
