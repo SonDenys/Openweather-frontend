@@ -1,13 +1,15 @@
 import { Inter } from "next/font/google";
-import { Button, TextField, Autocomplete } from "@mui/material";
+import { TextField, Autocomplete, Card, CardActions } from "@mui/material";
 import { useState } from "react";
 import { chooseNextTrip } from "@/helpers/chooseNextTrip";
 import { useRouter } from "next/router";
-import Link from "next/link";
-
+import { Tooltip } from "react-tooltip";
 import { addFavorite } from "@/helpers/favorites";
 import NextTrip from "@/components/NextTrip";
 import { getSuggestions } from "@/helpers/getSuggestions";
+import LayoutComponent from "@/components/LayoutComponent";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -71,90 +73,90 @@ export default function Home() {
   };
 
   return (
-    <main
-      className={`bg-white flex min-h-screen flex-col items-center justify-evenly ${inter.className}`}
-    >
-      <Link href="/favoritesPage">
-        <div>
-          <Button variant="outlined">Les favoris</Button>
+    <LayoutComponent>
+      <main className="pt-10 ">
+        <div className="flex">
+          <Autocomplete
+            sx={{
+              minWidth: 300,
+              paddingRight: 5,
+            }}
+            freeSolo
+            options={suggestions}
+            inputValue={city1}
+            onInputChange={handleInputChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="=city1"
+                label="1ère ville"
+                variant="outlined"
+                onChange={(event) => setCity1(event.target.value)}
+              />
+            )}
+          />
+
+          <Autocomplete
+            sx={{ minWidth: 300, paddingLeft: 5 }}
+            freeSolo
+            options={suggestions}
+            inputValue={city2}
+            onInputChange={handleInputChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="city2"
+                label="2ème ville"
+                variant="outlined"
+                onChange={(event) => setCity2(event.target.value)}
+              />
+            )}
+          />
         </div>
-      </Link>
 
-      <div className="">
-        <Autocomplete
-          freeSolo
-          options={suggestions}
-          inputValue={city1}
-          onInputChange={handleInputChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              id="=city1"
-              label="1ère ville"
-              variant="outlined"
-              onChange={(event) => setCity1(event.target.value)}
-            />
+        <div className="text-center mt-5">
+          <CompareArrowsIcon
+            onClick={() => handleChooseNextTrip(city1, city2)}
+            className="cursor-pointer"
+          />
+        </div>
+
+        <div id="react-tooltip-root"></div>
+
+        <div>
+          {nextTrip && (
+            <>
+              <Card sx={{ minWidth: 345, marginTop: 5 }}>
+                <NextTrip
+                  cityName={nextTrip.city}
+                  score={nextTrip.score}
+                  temperature={nextTrip.temp}
+                  humidity={nextTrip.humidity}
+                  clouds={nextTrip.clouds}
+                />
+                <CardActions>
+                  <div className="m-auto">
+                    {/* <Button
+                      size="small"
+                      color="primary"
+                      onClick={() => handleAddFavorite(nextTrip.city)}
+                      className="text-cyan-700 text-xs"
+                    >
+                      Ajouter en favoris
+                    </Button> */}
+
+                    <AddCircleOutlineIcon
+                      onClick={() => handleAddFavorite(nextTrip.city)}
+                      className="text-cyan-700 cursor-pointer"
+                    />
+                  </div>
+                </CardActions>
+              </Card>
+            </>
           )}
-        />
-        {/* <TextField
-          id="city1"
-          label="1ère ville"
-          variant="standard"
-          value={city1}
-          onChange={(event) => setCity1(event.target.value)}
-        /> */}
-
-        <Autocomplete
-          freeSolo
-          options={suggestions}
-          inputValue={city2}
-          onInputChange={handleInputChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              id="city2"
-              label="2ème ville"
-              variant="outlined"
-              onChange={(event) => setCity2(event.target.value)}
-            />
-          )}
-        />
-
-        {/* <TextField
-          id="city2"
-          label="2ème ville"
-          variant="standard"
-          value={city2}
-          onChange={(event) => setCity2(event.target.value)}
-        /> */}
-        <Button
-          variant="contained"
-          className="bg-slate-500"
-          onClick={() => handleChooseNextTrip(city1, city2)}
-        >
-          Comparer
-        </Button>
-      </div>
-      <div>
-        {nextTrip && (
-          <div className="">
-            <NextTrip
-              cityName={nextTrip.city}
-              score={nextTrip.score}
-              temperature={nextTrip.temp}
-              humidity={nextTrip.humidity}
-              clouds={nextTrip.clouds}
-            />
-            <Button
-              variant="outlined"
-              onClick={() => handleAddFavorite(nextTrip.city)}
-            >
-              Ajouter en favoris
-            </Button>
-          </div>
-        )}
-      </div>
-      <p>{errorMessage}</p>
-    </main>
+        </div>
+        <p>{errorMessage}</p>
+      </main>
+    </LayoutComponent>
   );
 }
