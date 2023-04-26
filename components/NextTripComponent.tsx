@@ -6,7 +6,7 @@ import LocationCityIcon from "@mui/icons-material/LocationCity";
 import SportsScoreIcon from "@mui/icons-material/SportsScore";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 
-export interface nextTripProps {
+export interface NextTripProps {
   cityName: string;
   score: number;
   temperature: number;
@@ -14,9 +14,10 @@ export interface nextTripProps {
   clouds: number;
   image?: string;
   handleAddFavorite?: any;
+  sameResult: boolean;
 }
 
-export default function NextTrip(props: nextTripProps) {
+export default function NextTrip(props: NextTripProps) {
   return (
     <div className="text-cyan-700 text-center">
       <CardActionArea>
@@ -28,9 +29,15 @@ export default function NextTrip(props: nextTripProps) {
         /> */}
         <CardContent>
           <div className="">
-            <Typography gutterBottom variant="h5" component="div">
-              Ta prochaine destination est {props.cityName} ✨ !
-            </Typography>
+            {props.sameResult ? (
+              <Typography gutterBottom variant="h5" component="div">
+                Ta prochaine destination reste {props.cityName} 👊👊 !
+              </Typography>
+            ) : (
+              <Typography gutterBottom variant="h5" component="div">
+                Ta prochaine destination est {props.cityName} ✨ !
+              </Typography>
+            )}
           </div>
 
           <div>

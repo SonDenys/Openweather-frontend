@@ -3,15 +3,13 @@ import { TextField, Autocomplete, Card, CardActions } from "@mui/material";
 import { useState } from "react";
 import { chooseNextTrip } from "@/helpers/chooseNextTrip";
 import { useRouter } from "next/router";
-import { Tooltip } from "react-tooltip";
 import { addFavorite } from "@/helpers/favorites";
-import NextTrip from "@/components/NextTrip";
+import NextTripComponent from "@/components/NextTripComponent";
 import { getSuggestions } from "@/helpers/getSuggestions";
 import LayoutComponent from "@/components/LayoutComponent";
 import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
-const inter = Inter({ subsets: ["latin"] });
+import ErrorIcon from "@mui/icons-material/Error";
 
 interface NextTripInterface {
   city: string;
@@ -26,31 +24,57 @@ export default function Home() {
   const [city2, setCity2] = useState("");
   const [nextTrip, setNextTrip] = useState<NextTripInterface>();
   const [suggestions, setSuggestions] = useState([]);
+  const [sameResult, setSameResult] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [prevResult, setPrevResult] = useState("");
   const router = useRouter();
 
   const handleChooseNextTrip = async (city1: string, city2: string) => {
-    if (!city1 || !city2) {
-      setErrorMessage("Au moins une ville est manquante");
-    }
     try {
+      if (city1 === city2) {
+        setErrorMessage(
+          "Les 2 villes sélectionnées sont les mêmes, veuillez corriger"
+        );
+        return;
+      }
+
       const result = await chooseNextTrip(city1, city2);
       if (result && result.data) {
-        setNextTrip(result.data);
-        setErrorMessage("");
-        console.log("result === ", result);
+        if (JSON.stringify(result.data) === JSON.stringify(prevResult)) {
+          console.log("Le résultat est toujours le même");
+          setSameResult(true);
+        } else {
+          setNextTrip(result.data);
+          setPrevResult(result.data);
+          setSameResult(false);
+          setErrorMessage("");
+        }
       } else {
-        setErrorMessage("Il y'a une erreur sur une des villes sélectionnées");
+        setErrorMessage("Les 2 champs ne sont pas correctement remplies");
       }
     } catch (error: any) {
       console.log(error);
     }
   };
 
-  const handleAddFavorite = async (cityName: string) => {
+  const handleAddFavorite = async (
+    cityName: string,
+    temperature: number,
+    humidity: number,
+    clouds: number
+  ) => {
     try {
-      await addFavorite(cityName);
-      router.push("/favoritesPage");
+      const response = await addFavorite(
+        cityName,
+        temperature,
+        humidity,
+        clouds
+      );
+      if (response) {
+        router.push("/favoritesPage");
+      } else {
+        setErrorMessage("Cette ville fait déjà partie de tes favoris");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -119,34 +143,38 @@ export default function Home() {
             onClick={() => handleChooseNextTrip(city1, city2)}
             className="cursor-pointer"
           />
+          {errorMessage && (
+            <div className="flex justify-center text-red-600 text-sm mt-5">
+              <ErrorIcon />
+              <p>{errorMessage}</p>
+              <ErrorIcon />
+            </div>
+          )}
         </div>
-
-        <div id="react-tooltip-root"></div>
 
         <div>
           {nextTrip && (
             <>
               <Card sx={{ minWidth: 345, marginTop: 5 }}>
-                <NextTrip
+                <NextTripComponent
                   cityName={nextTrip.city}
                   score={nextTrip.score}
                   temperature={nextTrip.temp}
                   humidity={nextTrip.humidity}
                   clouds={nextTrip.clouds}
+                  sameResult={sameResult}
                 />
                 <CardActions>
                   <div className="m-auto">
-                    {/* <Button
-                      size="small"
-                      color="primary"
-                      onClick={() => handleAddFavorite(nextTrip.city)}
-                      className="text-cyan-700 text-xs"
-                    >
-                      Ajouter en favoris
-                    </Button> */}
-
                     <AddCircleOutlineIcon
-                      onClick={() => handleAddFavorite(nextTrip.city)}
+                      onClick={() =>
+                        handleAddFavorite(
+                          nextTrip.city,
+                          nextTrip.temp,
+                          nextTrip.humidity,
+                          nextTrip.clouds
+                        )
+                      }
                       className="text-cyan-700 cursor-pointer"
                     />
                   </div>
@@ -155,7 +183,6 @@ export default function Home() {
             </>
           )}
         </div>
-        <p>{errorMessage}</p>
       </main>
     </LayoutComponent>
   );

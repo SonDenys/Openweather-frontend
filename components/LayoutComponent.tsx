@@ -8,11 +8,12 @@ interface LayoutInterface {
 export default function LayoutComponent(props: LayoutInterface) {
   return (
     <div
-      className={`bg-white flex flex-col justify-center items-center ${inter.className}`}
+      className={` bg-slate-100 flex flex-col items-center ${inter.className}`}
     >
-      <div className="mt-20 text-cyan-700 font-bold text-3xl">
+      <p className="mt-20 text-cyan-700 font-bold text-3xl">
         METEO sur les 5 prochains jours
-      </div>
+      </p>
+      <p className="pt-1 text-xs text-gray-500">basé sur l'api OpenWeather</p>
       <AccountMenuComponent />
       {props.children}
     </div>

@@ -1,9 +1,12 @@
 import * as React from "react";
+import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 
 export default function AccountMenuComponent() {
+  const router = useRouter();
+
   return (
     <React.Fragment>
       <Box
@@ -18,7 +21,11 @@ export default function AccountMenuComponent() {
           <div>
             <Typography
               sx={{ minWidth: 100 }}
-              className="cursor-pointer text-cyan-600"
+              className={`cursor-pointer ${
+                router.pathname === "/"
+                  ? "text-cyan-500 underline decoration-slice"
+                  : "text-slate-600 hover:underline decoration-slate-600"
+              }`}
             >
               Accueil
             </Typography>
@@ -29,7 +36,11 @@ export default function AccountMenuComponent() {
           <div>
             <Typography
               sx={{ minWidth: 100 }}
-              className="cursor-pointer text-cyan-600"
+              className={`cursor-pointer ${
+                router.pathname === "/favoritesPage"
+                  ? "text-cyan-500"
+                  : "text-slate-600 hover:underline decoration-slate-600"
+              }`}
             >
               Favoris
             </Typography>

@@ -1,10 +1,18 @@
 import axios from "axios";
 import { BACKEND_URL } from "@/params";
 
-export const addFavorite = async (cityName: string) => {
+export const addFavorite = async (
+  cityName: string,
+  temperature: number,
+  humidity: number,
+  clouds: number
+) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/favorites/add`, {
       cityName,
+      temperature,
+      humidity,
+      clouds,
     });
     return response;
   } catch (error) {
