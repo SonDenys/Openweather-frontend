@@ -138,11 +138,12 @@ export default function Home() {
           />
         </div>
 
-        <div className="text-center mt-5">
+        <div className="text-center mt-5 text-cyan-700">
           <CompareArrowsIcon
             onClick={() => handleChooseNextTrip(city1, city2)}
             className="cursor-pointer"
           />
+
           {errorMessage && (
             <div className="flex justify-center text-red-600 text-sm mt-5">
               <ErrorIcon />
