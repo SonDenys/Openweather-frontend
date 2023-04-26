@@ -50,7 +50,7 @@ export default function Home() {
           setErrorMessage("");
         }
       } else {
-        setErrorMessage("Les 2 champs ne sont pas correctement remplies");
+        setErrorMessage("Les 2 champs ne sont pas correctement remplis");
       }
     } catch (error: any) {
       console.log(error);
