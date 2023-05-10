@@ -20,7 +20,12 @@ export default function FavoriteComponent(props: FavoriteCityInterface) {
 
         <div className="flex text-gray-700">
           <ThermostatIcon />
-          <div>Température : {props.temperature.toFixed(0)}°C</div>
+
+          {props.temperature ? (
+            <div>Température : {props.temperature.toFixed(0)}°C</div>
+          ) : (
+            <div>Température : {props.temperature}°C</div>
+          )}
         </div>
 
         <div className=" text-gray-700">💧 Humidité : {props.humidity}%</div>
