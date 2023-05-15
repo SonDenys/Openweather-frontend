@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import { TextField, Autocomplete, Card, CardActions } from "@mui/material";
 import { useState } from "react";
 import { chooseNextTrip } from "@/helpers/chooseNextTrip";
@@ -29,6 +28,18 @@ export default function Home() {
   const [prevResult, setPrevResult] = useState("");
   const router = useRouter();
 
+  const handleResult = (data: any) => {
+    if (JSON.stringify(data) === JSON.stringify(prevResult)) {
+      console.log("Le résultat est toujours le même");
+      setSameResult(true);
+    } else {
+      setNextTrip(data);
+      setPrevResult(data);
+      setSameResult(false);
+      setErrorMessage("");
+    }
+  };
+
   const handleChooseNextTrip = async (city1: string, city2: string) => {
     try {
       if (city1 === city2) {
@@ -40,15 +51,7 @@ export default function Home() {
 
       const result = await chooseNextTrip(city1, city2);
       if (result && result.data) {
-        if (JSON.stringify(result.data) === JSON.stringify(prevResult)) {
-          console.log("Le résultat est toujours le même");
-          setSameResult(true);
-        } else {
-          setNextTrip(result.data);
-          setPrevResult(result.data);
-          setSameResult(false);
-          setErrorMessage("");
-        }
+        handleResult(result.data);
       } else {
         setErrorMessage("Les 2 champs ne sont pas correctement remplis");
       }
@@ -91,6 +94,7 @@ export default function Home() {
 
   const handleInputChange = async (event: any, value: string) => {
     if (value.length > 2) {
+      setSuggestions([]);
       const suggestions = await fetchSuggestions(value);
       setSuggestions(suggestions);
     }
